@@ -23,7 +23,6 @@ app.use("/users", require("./users/users.controller"));
 // app.use(errorHandler);
 
 app.get("/", function (req, res) {
-  res.render("Hello Node Js");
   res.send("Hello Node Js");
 });
 
