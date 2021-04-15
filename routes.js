@@ -3,7 +3,7 @@ const QR = require("./Controllers/qrgenerator");
 const InventryMaster = require("./Controllers/Inventry");
 
 //QR 
-router.get("/", QR.myFunc);
+// router.get("/", QR.myFunc);
 router.get("/getQRlist", QR.getQRData);
 router.get("/getQRlistbyItemNumber", QR.getQRlistbyItemNumberData);
 
