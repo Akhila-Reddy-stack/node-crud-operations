@@ -9,7 +9,7 @@ const bodyParser = require("body-parser");
 const port = process.env.PORT || 5001
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-var router = require("./routes");
+// var router = require("./routes");
 app.use(cors());
 
 // const sourceFile = require("./qrgenerator");
@@ -17,17 +17,18 @@ app.use(cors());
 // app.use(jwt());
 // app.use('', require('./app'));
 // api routes
-app.use("/users", require("./users/users.controller"));
+// app.use("/users", require("./users/users.controller"));
 
 // global error handler
 // app.use(errorHandler);
 
 app.get("/", function (req, res) {
+  // res.render("Hello Node Js");
   res.send("Hello Node Js");
 });
 
 
-app.use(router);
+// app.use(router);
 
 
 var server = app.listen(port, function (err) {
