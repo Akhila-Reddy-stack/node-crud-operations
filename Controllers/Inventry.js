@@ -127,164 +127,164 @@ class Inventry {
     });
   }
 
-  async addInventryData (req, res) {
-    AWS.config.update({
-        region: "us-west-2",
-        endpoint: `http://localhost:${port}`,
-      });
-      const {
-        Departmentoftheitem,
-        Itemnumber,
-        Description,
-        SecondDescription,
-        Qty,
-        Avgcost,
-        Priceyoucharge,
-        Pricewithtax,
-        Instock,
-      } = req.body;
-      // Generate random string ID
-      const docClient = new AWS.DynamoDB.DocumentClient();
-      const params = {
-        TableName: "userData",
-        Item: {
-          Departmentoftheitem: Departmentoftheitem,
-          Itemnumber: Itemnumber,
-          Description: Description,
-          SecondDescription: SecondDescription,
-          Qty: Qty,
-          Avgcost: Avgcost,
-          Priceyoucharge: Priceyoucharge,
-          Pricewithtax: Pricewithtax,
-          Instock: Instock,
-        },
-      };
-      console.log(params.Item, "items");
-      const data = params.Item;
-      docClient.put(params, function (err, data) {
-        console.log("data", data);
-        if (err) {
-          res.send({
-            success: false,
-            message: "Error:Server error",
-          });
-        } else {
-          console.log("data", data);
-          const { Items } = data;
-          res.send({
-            status: true,
-            message: "Added Successfully!!",
-          });
-        }
-      });
-  }
+//   async addInventryData (req, res) {
+//     AWS.config.update({
+//         region: "us-west-2",
+//         endpoint: `http://localhost:${port}`,
+//       });
+//       const {
+//         Departmentoftheitem,
+//         Itemnumber,
+//         Description,
+//         SecondDescription,
+//         Qty,
+//         Avgcost,
+//         Priceyoucharge,
+//         Pricewithtax,
+//         Instock,
+//       } = req.body;
+//       // Generate random string ID
+//       const docClient = new AWS.DynamoDB.DocumentClient();
+//       const params = {
+//         TableName: "userData",
+//         Item: {
+//           Departmentoftheitem: Departmentoftheitem,
+//           Itemnumber: Itemnumber,
+//           Description: Description,
+//           SecondDescription: SecondDescription,
+//           Qty: Qty,
+//           Avgcost: Avgcost,
+//           Priceyoucharge: Priceyoucharge,
+//           Pricewithtax: Pricewithtax,
+//           Instock: Instock,
+//         },
+//       };
+//       console.log(params.Item, "items");
+//       const data = params.Item;
+//       docClient.put(params, function (err, data) {
+//         console.log("data", data);
+//         if (err) {
+//           res.send({
+//             success: false,
+//             message: "Error:Server error",
+//           });
+//         } else {
+//           console.log("data", data);
+//           const { Items } = data;
+//           res.send({
+//             status: true,
+//             message: "Added Successfully!!",
+//           });
+//         }
+//       });
+//   }
 
-  // Update By Id
+//   // Update By Id
 
-  async updateInventryData (req, res) {
-    AWS.config.update({
-        region: "us-west-2",
-        endpoint: `http://localhost:${port}`,
-      });
+//   async updateInventryData (req, res) {
+//     AWS.config.update({
+//         region: "us-west-2",
+//         endpoint: `http://localhost:${port}`,
+//       });
     
-      const docClient = new AWS.DynamoDB.DocumentClient();
+//       const docClient = new AWS.DynamoDB.DocumentClient();
     
-      const {
-        Departmentoftheitem,
-        Description,
-        SecondDescription,
-        Qty,
-        Avgcost,
-        Priceyoucharge,
-        Pricewithtax,
-        Instock,
-      } = req.body;
-      const Itemnumber = Number(req.query.Itemnumber);
-      docClient.update(
-        {
-          TableName: "userData",
-          Key: {
-            Itemnumber: Itemnumber,
-          },
+//       const {
+//         Departmentoftheitem,
+//         Description,
+//         SecondDescription,
+//         Qty,
+//         Avgcost,
+//         Priceyoucharge,
+//         Pricewithtax,
+//         Instock,
+//       } = req.body;
+//       const Itemnumber = Number(req.query.Itemnumber);
+//       docClient.update(
+//         {
+//           TableName: "userData",
+//           Key: {
+//             Itemnumber: Itemnumber,
+//           },
     
-          ExpressionAttributeValues: {
-            ":a": Departmentoftheitem,
-            ":b": Description,
-            ":c": SecondDescription,
-            ":d": Qty,
-            ":e": Avgcost,
-            ":f": Priceyoucharge,
-            ":g": Pricewithtax,
-            ":h": Instock,
+//           ExpressionAttributeValues: {
+//             ":a": Departmentoftheitem,
+//             ":b": Description,
+//             ":c": SecondDescription,
+//             ":d": Qty,
+//             ":e": Avgcost,
+//             ":f": Priceyoucharge,
+//             ":g": Pricewithtax,
+//             ":h": Instock,
     
          
-          },
-          UpdateExpression:
-            "SET Departmentoftheitem = :a,Description = :b,SecondDescription = :c,Qty = :d,Avgcost = :e,Priceyoucharge = :f,Pricewithtax = :g,Instock = :h",
-        },
-        function (err, data) {
-          if (err) {
-            console.log("Unable to update item", JSON.stringify(err, null, 2));
-            res.send({
-              status: true,
-              message: "Error:Server error",
-            });
+//           },
+//           UpdateExpression:
+//             "SET Departmentoftheitem = :a,Description = :b,SecondDescription = :c,Qty = :d,Avgcost = :e,Priceyoucharge = :f,Pricewithtax = :g,Instock = :h",
+//         },
+//         function (err, data) {
+//           if (err) {
+//             console.log("Unable to update item", JSON.stringify(err, null, 2));
+//             res.send({
+//               status: true,
+//               message: "Error:Server error",
+//             });
       
-          } else {
-            res.send({
-              status: true,
-              message: "Updated Successfully!!",
-              clients: data,
-            });
+//           } else {
+//             res.send({
+//               status: true,
+//               message: "Updated Successfully!!",
+//               clients: data,
+//             });
          
-          }
-        }
-      );
+//           }
+//         }
+//       );
     
-  }
+//   }
 
   
-   //Delete
+//    //Delete
   
-   async deleteInventryData (req, res) {
+//    async deleteInventryData (req, res) {
 
    
-  AWS.config.update({
-    region: "us-west-2",
-    endpoint: `http://localhost:${port}`,
-  });
+//   AWS.config.update({
+//     region: "us-west-2",
+//     endpoint: `http://localhost:${port}`,
+//   });
 
-  // Generate random string ID
-  const Itemnumber = Number(req.query.Itemnumber);
+//   // Generate random string ID
+//   const Itemnumber = Number(req.query.Itemnumber);
 
-  const docClient = new AWS.DynamoDB.DocumentClient();
-  const params = {
-    TableName: "userData",
-    Key: {
-      Itemnumber: Itemnumber,
+//   const docClient = new AWS.DynamoDB.DocumentClient();
+//   const params = {
+//     TableName: "userData",
+//     Key: {
+//       Itemnumber: Itemnumber,
   
-    },
-  };
+//     },
+//   };
 
-  console.log("deleting item", params.Key);
-  docClient.delete(params, function (err, data) {
-    console.log(err, data);
-    if (err) {
-      console.log("Unable to delete item", JSON.stringify(err, null, 2));
-      res.send({
-        status: false,
-        message: "Error:Server error",
-      });
-    } else {
-      console.log("deleted");
-      const { Items } = data;
-      res.send({
-        status: true,
-        message: "Deleted Successfully!!",
-      });
-    }
-  });
-   }
+//   console.log("deleting item", params.Key);
+//   docClient.delete(params, function (err, data) {
+//     console.log(err, data);
+//     if (err) {
+//       console.log("Unable to delete item", JSON.stringify(err, null, 2));
+//       res.send({
+//         status: false,
+//         message: "Error:Server error",
+//       });
+//     } else {
+//       console.log("deleted");
+//       const { Items } = data;
+//       res.send({
+//         status: true,
+//         message: "Deleted Successfully!!",
+//       });
+//     }
+//   });
+//    }
     
 
 
