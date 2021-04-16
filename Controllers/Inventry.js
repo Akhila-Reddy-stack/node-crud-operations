@@ -5,10 +5,12 @@ var bodyParser = require ('body-parser');
 var app = express ();
 const cors = require ('cors');
 var dataList = [];
+const port = process.env.PORT || 8000
 AWS.config.update ({
   region: 'us-west-2',
-//   endpoint: 'https://node-api-operation.herokuapp.com',
+  endpoint: `http://localhost:${port}`,
 });
+
 app.use (bodyParser.json ());
 app.use (cors ());
 const dynamoDB = new AWS.DynamoDB ();
@@ -100,7 +102,7 @@ class Inventry {
     console.log ( 'dattttt');
     AWS.config.update ({
       region: 'us-west-2',
-//       endpoint: 'https://node-api-operation.herokuapp.com',
+      endpoint: `http://localhost:${port}`,
     });
     const docClient = new AWS.DynamoDB.DocumentClient ();
     const params = {
@@ -128,7 +130,7 @@ class Inventry {
   async addInventryData (req, res) {
     AWS.config.update({
         region: "us-west-2",
-//         endpoint: 'https://node-api-operation.herokuapp.com',
+        endpoint: `http://localhost:${port}`,
       });
       const {
         Departmentoftheitem,
@@ -182,7 +184,7 @@ class Inventry {
   async updateInventryData (req, res) {
     AWS.config.update({
         region: "us-west-2",
-//         endpoint: 'https://node-api-operation.herokuapp.com',
+        endpoint: `http://localhost:${port}`,
       });
     
       const docClient = new AWS.DynamoDB.DocumentClient();
@@ -249,7 +251,7 @@ class Inventry {
    
   AWS.config.update({
     region: "us-west-2",
-//     endpoint: 'https://node-api-operation.herokuapp.com',
+    endpoint: `http://localhost:${port}`,
   });
 
   // Generate random string ID
