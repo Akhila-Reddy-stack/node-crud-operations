@@ -9,7 +9,7 @@ const bodyParser = require("body-parser");
 const port = process.env.PORT || 5001
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-var router = require("./routes");
+// var router = require("./routes");
 app.use(cors());
 
 // const sourceFile = require("./qrgenerator");
@@ -28,7 +28,7 @@ app.get("/", function (req, res) {
 });
 
 
-app.use(router);
+// app.use(router);
 
 
 var server = app.listen(port, function (err) {
