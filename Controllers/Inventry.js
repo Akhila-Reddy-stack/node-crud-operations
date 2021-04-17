@@ -4,6 +4,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 const cors = require('cors');
+const config = require('../config.js');
 var dataList = [];
 const port = process.env.PORT || 8000
 
@@ -11,20 +12,17 @@ var env = process.env.NODE_ENV || 'development';
 console.log(env, "env")
 console.log("process.env.PORT", process.env.PORT)
 
-if (env === 'development') {
-  AWS.config.update({
-    region: 'us-west-2',
-    endpoint: `http://localhost:${port}`,
-  });
-}
-else {
-  AWS.config.update({
-    region: 'us-west-2',
-    endpoint: "https://dynamodb.us-west-2.amazonaws.com"
-  });
-}
+// if (env === 'development') {
+//   AWS.config.update({
+//     region: 'us-west-2',
+//     endpoint: `http://localhost:${port}`,
+//   });
+// }
+// else {
+//   AWS.config.update(config.aws_remote_config);
+// }
 
-
+AWS.config.update(config.aws_remote_config);
 app.use(bodyParser.json());
 app.use(cors());
 const dynamoDB = new AWS.DynamoDB();
@@ -115,18 +113,7 @@ class Inventry {
   async getInventryList(req, res) {
     console.log('dattttt');
 
-    if (env === 'development') {
-      AWS.config.update({
-        region: 'us-west-2',
-        endpoint: `http://localhost:${port}`,
-      });
-    }
-    else {
-      AWS.config.update({
-        region: 'us-west-2',
-        endpoint: "https://dynamodb.us-west-2.amazonaws.com"
-      });
-    }
+    AWS.config.update(config.aws_remote_config);
 
     const docClient = new AWS.DynamoDB.DocumentClient();
     const params = {
@@ -153,18 +140,7 @@ class Inventry {
 
   async addInventryData(req, res) {
 
-    if (env === 'development') {
-      AWS.config.update({
-        region: 'us-west-2',
-        endpoint: `http://localhost:${port}`,
-      });
-    }
-    else {
-      AWS.config.update({
-        region: 'us-west-2',
-        endpoint: "https://dynamodb.us-west-2.amazonaws.com"
-      });
-    }
+    AWS.config.update(config.aws_remote_config);
 
     const {
       Departmentoftheitem,
@@ -216,20 +192,7 @@ class Inventry {
   // Update By Id
 
   async updateInventryData(req, res) {
-
-    if (env === 'development') {
-      AWS.config.update({
-        region: 'us-west-2',
-        endpoint: `http://localhost:${port}`,
-      });
-    }
-    else {
-      AWS.config.update({
-        region: 'us-west-2',
-        endpoint: "https://dynamodb.us-west-2.amazonaws.com"
-      });
-    }
-
+    AWS.config.update(config.aws_remote_config);
 
     const docClient = new AWS.DynamoDB.DocumentClient();
 
@@ -291,22 +254,7 @@ class Inventry {
   //Delete
 
   async deleteInventryData(req, res) {
-
-
-
-    if (env === 'development') {
-      AWS.config.update({
-        region: 'us-west-2',
-        endpoint: `http://localhost:${port}`,
-      });
-    }
-    else {
-      AWS.config.update({
-        region: 'us-west-2',
-        endpoint: "https://dynamodb.us-west-2.amazonaws.com"
-      });
-    }
-
+    AWS.config.update(config.aws_remote_config);
     // Generate random string ID
     const Itemnumber = Number(req.query.Itemnumber);
 
