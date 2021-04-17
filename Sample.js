@@ -1,134 +1,137 @@
-// "use strict";
+"use strict";
 
-// // import AWS from "aws-sdk";
-// var AWS = require("aws-sdk");
-// var express = require("express");
-// var bodyParser = require("body-parser");
-// var app = express();
-// const cors = require("cors");
-// var dataList = [];
+// import AWS from "aws-sdk";
+var AWS = require("aws-sdk");
+var express = require("express");
+var bodyParser = require("body-parser");
+var app = express();
+const cors = require("cors");
+const config = require('./config.js');
+console.log(config,"config")
+var dataList = [];
 // AWS.config.update({
-//   region: "us-west-2",
-//   endpoint: "http://localhost:8000",
+//   region: "ap-northeast-1",
+// //   endpoint: "http://localhost:8000",
 // });
-// // app.use(bodyParser.urlencoded({extended: true}));
-// app.use(bodyParser.json());
-// app.use(cors());
-// const dynamoDB = new AWS.DynamoDB();
+AWS.config.update(config.aws_remote_config);
+// app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(cors());
+const dynamoDB = new AWS.DynamoDB();
 
-// const findDBtables = dynamoDB.listTables();
-// // console.log("findDB", findDBtables);
+const findDBtables = dynamoDB.listTables();
+// console.log("findDB", findDBtables);
 
-// findDBtables
-//   .promise()
-//   .then(async (getTableNames) => {
-//     const findUserDataTable = getTableNames.TableNames.find(
-//       (tableName) => tableName === "userData"
-//     );
-//     if (findUserDataTable) {
-//       await insertUserDataRecords();
-//       console.log("Data inserted");
-//     } else {
-//       await createUserDataTable().then(async () => {
-//         await insertUserDataRecords();
-//         console.log("Table created & Data inserted");
-//       });
-//     }
-//   })
-//   .catch((error) => {
-//     console.log(error);
-//   });
+findDBtables
+  .promise()
+  .then(async (getTableNames) => {
+    const findUserDataTable = getTableNames.TableNames.find(
+      (tableName) => tableName === "userData"
+    );
+    if (findUserDataTable) {
+      await insertUserDataRecords();
+      console.log("Data inserted");
+    } else {
+      await createUserDataTable().then(async () => {
+        await insertUserDataRecords();
+        console.log("Table created & Data inserted");
+      });
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
 
-// const createUserDataTable = () => {
-//   const tableSchemaParam = {
-//     TableName: "userData",
-//     KeySchema: [
-//       { AttributeName: "Itemnumber", KeyType: "HASH" },
-//       // { AttributeName: "age", KeyType: "RANGE" },
-//     ],
+const createUserDataTable = () => {
+  const tableSchemaParam = {
+    TableName: "userData",
+    KeySchema: [
+      { AttributeName: "Itemnumber", KeyType: "HASH" },
+      // { AttributeName: "age", KeyType: "RANGE" },
+    ],
 
-//     AttributeDefinitions: [
-//       { AttributeName: "Itemnumber", AttributeType: "N" },
-//       // { AttributeName: "age", AttributeType: "N" },
-//     ],
+    AttributeDefinitions: [
+      { AttributeName: "Itemnumber", AttributeType: "N" },
+      // { AttributeName: "age", AttributeType: "N" },
+    ],
 
-//     ProvisionedThroughput: {
-//       ReadCapacityUnits: 10,
-//       WriteCapacityUnits: 1,
-//     },
-//   };
-//   return new Promise((resolve, reject) => {
-//     dynamoDB.createTable(tableSchemaParam, (err, data) => {
-//       if (err) {
-//         console.log(err);
-//         reject(err);
-//       }
-//       resolve(data);
-//     });
-//   });
-// };
+    ProvisionedThroughput: {
+      ReadCapacityUnits: 10,
+      WriteCapacityUnits: 1,
+    },
+  };
+  return new Promise((resolve, reject) => {
+    dynamoDB.createTable(tableSchemaParam, (err, data) => {
+      if (err) {
+        console.log(err);
+        reject(err);
+      }
+      resolve(data);
+    });
+  });
+};
 
-// var itemList = [];
-// console.log(itemList, "itemList");
-// const insertUserDataRecords = () => {
-//   const userData = {
-//     TableName: "userData",
-//     Item: {
-//       Departmentoftheitem: "Beverages",
-//       Itemnumber: 123457,
-//       Description: "weikfield coffee",
-//       SecondDescription: "chocolate coffee",
-//       Qty: "100g",
-//       Avgcost: 95,
-//       Priceyoucharge: 102,
-//       Pricewithtax: 110,
-//       Instock: 30,
-//     },
-//   };
-//   dataList = userData.Item;
-//   const docClient = new AWS.DynamoDB.DocumentClient();
-//   return new Promise((resolve, reject) => {
-//     docClient.put(userData, (err, data) => {
-//       // console.log("userData", data);
-//       if (err) {
-//         console.log(err);
-//         reject(err);
-//       }
-//       resolve(data);
-//       console.log("userData", userData);
-//     });
-//   });
-// };
+var itemList = [];
+console.log(itemList, "itemList");
+const insertUserDataRecords = () => {
+  const userData = {
+    TableName: "userData",
+    Item: {
+      Departmentoftheitem: "Beverages",
+      Itemnumber: 123458,
+      Description: "weikfield coffee",
+      SecondDescription: "chocolate coffee",
+      Qty: "100g",
+      Avgcost: 95,
+      Priceyoucharge: 102,
+      Pricewithtax: 110,
+      Instock: 30,
+    },
+  };
+  dataList = userData.Item;
+  const docClient = new AWS.DynamoDB.DocumentClient();
+  return new Promise((resolve, reject) => {
+    docClient.put(userData, (err, data) => {
+      // console.log("userData", data);
+      if (err) {
+        console.log(err);
+        reject(err);
+      }
+      resolve(data);
+      console.log("userData", userData);
+    });
+  });
+};
 
 
-// app.get("/inventryList", (req, res, next) => {
+app.get("/inventryList", (req, res, next) => {
 
-//   AWS.config.update({
-//     region: "us-west-2",
-//     endpoint: "http://localhost:8000",
-//   });
-//   const docClient = new AWS.DynamoDB.DocumentClient();
-//   const params = {
-//     TableName: "userData",
-//   };
-//   docClient.scan(params, function (err, data) {
-//     console.log(data);
-//     if (err) {
-//       res.send({
-//         success: false,
-//         message: "Error:Server error",
-//       });
-//     } else {
-//       const { Items } = data;
+  AWS.config.update({
+    region: "us-west-2",
+    // endpoint: "http://localhost:8000",
+  });
+  const docClient = new AWS.DynamoDB.DocumentClient();
+  const params = {
+    TableName: "userData",
+  };
+  docClient.scan(params, function (err, data) {
+    console.log(data);
+    if (err) {
+      res.send({
+        success: false,
+        message: "Error:Server error",
+      });
+    } else {
+      const { Items } = data;
 
-//       res.send({
-//         status: true,
-//         message: "Loaded List",
-//         data: Items,
-//       });
-//     }
-//   });
-// });
+      res.send({
+        status: true,
+        message: "Loaded List",
+        data: Items,
+      });
+    }
+  });
+});
 
 // app.post("/inventryList", (req, res, next) => {
  
@@ -291,5 +294,6 @@
 // });
 
 
-// app.listen(5001, () => console.log("API listening on port 5001!"));
-// // https://medium.com/@maeluenie/crud-functions-with-node-js-and-aws-dynamodb-56a8c861395d
+app.listen(5001, () => console.log("API listening on port 5001!"));
+// https://medium.com/@maeluenie/crud-functions-with-node-js-and-aws-dynamodb-56a8c861395d
+
