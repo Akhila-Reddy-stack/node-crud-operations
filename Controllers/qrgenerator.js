@@ -33,6 +33,7 @@ const myFunc = async () => {
   await myFunc()
 })()
 
+
 class QrGenerator {
 
     async getQRData(req, res) {
@@ -44,7 +45,7 @@ class QrGenerator {
         console.log("req", req.body.ItemNumber, req.query.ItemNumber);
       var ItemNumber = Number(req.query.ItemNumber);
       console.log(ItemNumber);
-      var singleData = sourceFile;
+      var singleData = data;
       var outputData = [];
       singleData.forEach((item) => {
         console.log(ItemNumber, item.Itemnumber);
