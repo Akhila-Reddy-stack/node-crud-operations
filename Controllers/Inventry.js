@@ -12,17 +12,14 @@ var env = process.env.NODE_ENV || 'development';
 console.log(env, "env")
 console.log("process.env.PORT", process.env.PORT)
 
-// if (env === 'development') {
-//   AWS.config.update({
-//     region: 'us-west-2',
-//     endpoint: `http://localhost:${port}`,
-//   });
-// }
-// else {
-//   AWS.config.update(config.aws_remote_config);
-// }
+if (env === 'development') {
+  AWS.config.update(config.aws_local_config);
+}
+else {
+  AWS.config.update(config.aws_remote_config);
+}
 
-AWS.config.update(config.aws_remote_config);
+// AWS.config.update(config.aws_remote_config);
 app.use(bodyParser.json());
 app.use(cors());
 const dynamoDB = new AWS.DynamoDB();
@@ -89,9 +86,10 @@ const insertUserDataRecords = () => {
       SecondDescription: 'chocolate coffee',
       Qty: '100g',
       Avgcost: 95,
-      Priceyoucharge: 102,
-      Pricewithtax: 110,
+      Priceyoucharge: 120,
+      Pricewithtax: "5%",
       Instock: 30,
+      MRP:100
     },
   };
   dataList = userData.Item;
@@ -113,7 +111,12 @@ class Inventry {
   async getInventryList(req, res) {
     console.log('dattttt');
 
-    AWS.config.update(config.aws_remote_config);
+    if (env === 'development') {
+      AWS.config.update(config.aws_local_config);
+    }
+    else {
+      AWS.config.update(config.aws_remote_config);
+    }
 
     const docClient = new AWS.DynamoDB.DocumentClient();
     const params = {
@@ -139,8 +142,12 @@ class Inventry {
   }
 
   async addInventryData(req, res) {
-
-    AWS.config.update(config.aws_remote_config);
+    if (env === 'development') {
+      AWS.config.update(config.aws_local_config);
+    }
+    else {
+      AWS.config.update(config.aws_remote_config);
+    }
 
     const {
       Departmentoftheitem,
@@ -152,6 +159,7 @@ class Inventry {
       Priceyoucharge,
       Pricewithtax,
       Instock,
+      MRP
     } = req.body;
     // Generate random string ID
     const docClient = new AWS.DynamoDB.DocumentClient();
@@ -167,6 +175,7 @@ class Inventry {
         Priceyoucharge: Priceyoucharge,
         Pricewithtax: Pricewithtax,
         Instock: Instock,
+        MRP:MRP
       },
     };
     console.log(params.Item, "items");
@@ -192,7 +201,12 @@ class Inventry {
   // Update By Id
 
   async updateInventryData(req, res) {
-    AWS.config.update(config.aws_remote_config);
+    if (env === 'development') {
+      AWS.config.update(config.aws_local_config);
+    }
+    else {
+      AWS.config.update(config.aws_remote_config);
+    }
 
     const docClient = new AWS.DynamoDB.DocumentClient();
 
@@ -205,6 +219,7 @@ class Inventry {
       Priceyoucharge,
       Pricewithtax,
       Instock,
+      MRP
     } = req.body;
     const Itemnumber = Number(req.query.Itemnumber);
     docClient.update(
@@ -223,17 +238,18 @@ class Inventry {
           ":f": Priceyoucharge,
           ":g": Pricewithtax,
           ":h": Instock,
+          ":i":MRP
 
 
         },
         UpdateExpression:
-          "SET Departmentoftheitem = :a,Description = :b,SecondDescription = :c,Qty = :d,Avgcost = :e,Priceyoucharge = :f,Pricewithtax = :g,Instock = :h",
+          "SET Departmentoftheitem = :a,Description = :b,SecondDescription = :c,Qty = :d,Avgcost = :e,Priceyoucharge = :f,Pricewithtax = :g,Instock = :h,MRP= :i",
       },
       function (err, data) {
         if (err) {
           console.log("Unable to update item", JSON.stringify(err, null, 2));
           res.send({
-            status: true,
+            status: false,
             message: "Error:Server error",
           });
 
@@ -254,7 +270,12 @@ class Inventry {
   //Delete
 
   async deleteInventryData(req, res) {
-    AWS.config.update(config.aws_remote_config);
+    if (env === 'development') {
+      AWS.config.update(config.aws_local_config);
+    }
+    else {
+      AWS.config.update(config.aws_remote_config);
+    }
     // Generate random string ID
     const Itemnumber = Number(req.query.Itemnumber);
 
