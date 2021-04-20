@@ -1,3 +1,5 @@
+
+
 'use strict';
 var AWS = require('aws-sdk');
 var express = require('express');
@@ -81,7 +83,7 @@ const insertUserDataRecords = () => {
     TableName: 'userData',
     Item: {
       Departmentoftheitem: 'Beverages',
-      Itemnumber: 123457,
+      Itemnumber: new Date().getTime(),
       Description: 'weikfield coffee',
       SecondDescription: 'chocolate coffee',
       Qty: '100g',
@@ -151,7 +153,7 @@ class Inventry {
 
     const {
       Departmentoftheitem,
-      Itemnumber,
+ 
       Description,
       SecondDescription,
       Qty,
@@ -163,11 +165,12 @@ class Inventry {
     } = req.body;
     // Generate random string ID
     const docClient = new AWS.DynamoDB.DocumentClient();
-    const params = {
+    var params ;
+     params = {
       TableName: "userData",
       Item: {
         Departmentoftheitem: Departmentoftheitem,
-        Itemnumber: Itemnumber,
+        Itemnumber: new Date().getTime(),
         Description: Description,
         SecondDescription: SecondDescription,
         Qty: Qty,
@@ -179,9 +182,15 @@ class Inventry {
       },
     };
     console.log(params.Item, "items");
-    const data = params.Item;
+    
+    var data;
+    data = params.Item;
+    data.Itemnumber = new Date().getTime(),
+    console.log(data,"dataaaaa")
+
     docClient.put(params, function (err, data) {
       console.log("data", data);
+      
       if (err) {
         res.send({
           success: false,
@@ -191,6 +200,7 @@ class Inventry {
         console.log("data", data);
         const { Items } = data;
         res.send({
+          data:new Date().getTime(),
           status: true,
           message: "Added Successfully!!",
         });
