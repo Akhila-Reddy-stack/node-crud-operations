@@ -34,11 +34,11 @@ findDBtables
       tableName => tableName === 'userData'
     );
     if (findUserDataTable) {
-      await insertUserDataRecords();
+//       await insertUserDataRecords();
       console.log('Data inserted');
     } else {
       await createUserDataTable().then(async () => {
-        await insertUserDataRecords();
+//         await insertUserDataRecords();
         console.log('Table created & Data inserted');
       });
     }
