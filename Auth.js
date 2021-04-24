@@ -1,3 +1,4 @@
+
 var express = require('express');
 var router = express.Router();
 var AWS = require('aws-sdk');
@@ -5,8 +6,15 @@ var app = express();
 // var cookieParser=require('cookie-parser');
 var bodyParser = require('body-parser');
 const cors = require("cors");
+const path = require("path");
+const fs = require("fs");
+const handlebars = require("handlebars");
 var crypto = require('crypto');
-const port = process.env.PORT || 5001
+
+var SendMail = function () { };
+
+module.exports = SendMail;
+const port = process.env.PORT || 5000
 app.use(bodyParser.json());
 app.use(cors());
 "use strict";
@@ -14,21 +22,33 @@ app.use(cors());
 
 
 var nodemailer = require("nodemailer");
-const ID = require("nodejs-unique-numeric-id-generator")
-var generateOTP = ID.generate(new Date().toJSON())
+// const ID = require("nodejs-unique-numeric-id-generator")
+// var generateOTP = ID.generate(new Date(4).toJSON())
+
+var otpGenerator = require('otp-generator')
+ 
+var generateOTP = otpGenerator.generate(4, { digits : true,alphabets :false, upperCase: false, specialChars: false });
 console.log("generate", generateOTP)
-var transporter = nodemailer.createTransport({
-    service: "outlook",
-    auth: {
-        user: "akhilas_reddy@outlook.com",
-        pass: "ucandoit@",
-    },
+
+var svc = new AWS.DynamoDB();
+const params = {
+    TableName: "Auth",
+
+};
+var tableCount;
+svc.describeTable(params, function (err, data) {
+    if (err) {
+        // error
+    } else {
+        var table = data['Table'];
+        tableCount = table['ItemCount']
+        console.log(table['ItemCount']);
+    }
 });
 
 
-
-// generate a hash from string
-key = "";
+// // generate a hash from string
+// key = "";
 
 /* AWS CONF. BOL */
 AWS.config.update({ region: "us-east-1", endpoint: "http://localhost:8000" });
@@ -118,14 +138,20 @@ const insertAuthRecords = () => {
     Registration section
 ----------------------------
 */
+var transporter = nodemailer.createTransport({
+    service: "outlook",
+    // host: "akhilas_reddy@outlook.com",
+    secureConnection: false,
+    auth: {
+        user: "akhilas_reddy@outlook.com",
+        pass: "ucandoit@",
+    },
+});
 
+app.post("/sendOTP", (req, res) => {
 
-app.post("/sendOTP", (req, res, err) => {
-    // AWS.config.update({
-    //   region: "us-west-2",
-    //   endpoint: "http://localhost:8000",
-    // });
     const { email } = req.body;
+    console.log(email)
     try {
         var mailOptions = {
             from: "akhilas_reddy@outlook.com",
@@ -137,118 +163,77 @@ app.post("/sendOTP", (req, res, err) => {
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
                 console.log(error);
-                res.json({ "Error": { "Response": "Error while sending Mail" } });
+                res.send({
+                    status: false,
+                    message: "Error while sending Mail",
+                });
+
             } else {
                 console.log("Email sent: " + info.response);
-                res.json({ "OK": { "Response": "OTP sent to your Email", "OTP": generateOTP } });
+                res.send({
+                    status: true,
+                    message: "OTP sent to your Email !!",
+                    "OTP": generateOTP
+                });
+
             }
         });
     }
     catch (error) {
         res.send({
-            success: false,
+            status: false,
             message: "Error:Error while fetching data",
         });
     }
-
-
-    // const docClient = new AWS.DynamoDB.DocumentClient();
-    // const params = {
-    //   TableName: "Auth",
-    //   Item: {
-    //     email:email
-    //   },
-    // };
-
-    // docClient.put(params, function (err, data) {
-    //   console.log("data", data,params);
-    //   if (err) {
-    //     res.send({
-    //       success: false,
-    //       message: "Error:Error while fetching data",
-    //     });
-    //   } else {
-    //     console.log("data", data);
-    //     console.log("data",params.Item.email);
-    //     var mailOptions = {
-    //         from: "akhilas_reddy@outlook.com",
-    //         to: params.Item.email,
-    //         subject: "Sending OTP",
-    //         text:
-    //           `Use ${generateOTP} to verify your account..`,
-    //       };
-    //     transporter.sendMail(mailOptions, function (error, info) {
-    //         if (error) {
-    //           console.log(error);
-    //           res.json({"Error":{"Response":"Error while sending Mail"}});
-    //         } else {
-    //           console.log("Email sent: " + info.response);
-    //           res.json({"OK":{"Response":"OTP sent to your Email","OTP":generateOTP}});
-    //         }
-    //       });
-
-    //   }
-    // });
 });
 
 app.post("/validateOTP", (req, res, next) => {
-
     const { otp } = req.body;
     try {
         if (generateOTP === otp) {
             console.log("otp validated");
+            res.send({
+                status: true,
+                message: "OTP is Verified !!",
+            });
             res.json({ "OK": { "Response": "OTP is Verified" } });
         }
         else if (generateOTP != otp) {
-            res.json({ "Error": { "Response": "OTP is not valid" } });
+            res.send({
+                status: false,
+                message: "OTP is not valid !!",
+            });
         }
         else {
-            res.json({ "Error": { "Response": "OTP is not valided" } });
+            res.send({
+                status: false,
+                message: "OTP is not valided !!",
+            });
         }
 
     }
-    catch(error){
+    catch (error) {
         res.send({
-            success: false,
+            status: false,
             message: "Error in fetching data",
         });
     }
-    
-    // AWS.config.update({
-    //   region: "us-west-2",
-    //   endpoint: "http://localhost:8000",
-    // });
-    // const docClient = new AWS.DynamoDB.DocumentClient();
-    // const params = {
-    //   TableName: "Auth",
-    //   Item: {
-    //     otp:otp
-    //   },
-    // };
-    // docClient.put(params, function (err, data) {
-    //   console.log("data", data,params);
-    //   if (err) {
-    //     res.send({
-    //       success: false,
-    //       message: "Error in fetching data",
-    //     });
-    //   } else {
-    //       if(generateOTP === params.Item.otp ){
-    //         console.log("otp validated");
-    //         res.json({"OK":{"Response":"OTP is Verified"}});
-    //       }
-    //       else if(generateOTP != params.Item.otp ){
-    //         res.json({"Error":{"Response":"OTP is not valid"}});
-    //       }
-    //       else{
-    //         res.json({"Error":{"Response":"OTP is not valided"}}); 
-    //       }
 
-
-    //   }
-    // });
 });
 
+
+function generatePassword() {
+    var length = 8,
+        charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&'*+,-@^_`~",
+        retVal = "";
+    for (var i = 0, n = charset.length; i < length; ++i) {
+        retVal += charset.charAt(Math.floor(Math.random() * n));
+    }
+    return retVal;
+}
+
+console.log(`id with 8 digits - ${generatePassword(8)}`);
+var randomPassword = `${generatePassword(8)}`
 
 app.post("/registration", (req, res, next) => {
     AWS.config.update({
@@ -261,10 +246,11 @@ app.post("/registration", (req, res, next) => {
     const params = {
         TableName: "Auth",
         Item: {
+            id: tableCount,
             email: email,
             firstname: firstname,
             lastname: lastname,
-            password: password
+            password: randomPassword
         },
     };
     console.log(params.Item, "items");
@@ -272,11 +258,14 @@ app.post("/registration", (req, res, next) => {
         console.log("data", data, params);
         if (err) {
             res.send({
-                success: false,
+                status: false,
                 message: "Error:Error while fetching data",
             });
         } else {
-            res.json({ "OK": { "Response": "Thanks for signing up!" } });
+            res.send({
+                status: true,
+                message: "Thanks for signing up!",
+            });
         }
     });
 });
@@ -284,191 +273,340 @@ app.post("/registration", (req, res, next) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.post('/registration1', function (req, res, next) {
-    /* Paramaters */
+app.get("/users", async (req, res, next) => {
     AWS.config.update({
         region: "us-west-2",
         endpoint: "http://localhost:8000",
     });
-    var { email, userName, password } = req.body;
-    //Read for current user.
-    console.log(req.body)
     const docClient = new AWS.DynamoDB.DocumentClient();
-
+    // console.log(docClient, "docClient")
     const params = {
         TableName: "Auth",
-        // Key:JSON.stringify({
-        //     email: req.body.email
-        // }),
-        Item: {
-            "email": email,
-            "password": password,
-            "userName": userName,
-            // "dateCreated": Date().toString(),
-            // "userEnabled": 1
-        }
-
     };
-    console.log(params, "paramss")
-    const data = params.Item;
-    docClient.get(params, function (err, data) {
-        console.log(params, data, "paramss")
+    docClient.scan(params, function (err, data) {
+        console.log("user scan", data);
         if (err) {
-            res.json({ "Error": { "Critical": "Unable to read item. Error JSON:" + err } });
+            res.send({
+                status: false,
+                message: "Error:Server error",
+            });
         } else {
+            const { Items } = data;
 
-            res.json({ "OK": { "Response": "Thanks for signing up!" } });
-
+            res.send({
+                status: true,
+                message: "Users List",
+                data: Items,
+            });
         }
     });
 
-
-
-    function addUser() {
-        // create hahs
-        //    var hash = crypto.createHmac('sha512', key);
-        //    hash.update(password);
-        //    var hashed_pass = hash.digest('hex').toString();
-
-        /* INTO DATABASE */
-        var paramsWrite = {
-            TableName: "Authentication",
-            Item: {
-                "password": password,
-                "email": email,
-                "userName": userName,
-                "dateCreated": Date().toString(),
-                "userEnabled": 1
-            }
-        };
-        docClient.put(paramsWrite, function (err, data) {
-            if (err) {
-                res.json({ "Error": { "Critical": "Unable to add item. Error JSON:" + err } });
-            } else {
-                res.json({ "OK": { "Response": "Thanks for signing up!" } });
-            }
-        });
-    };
 });
 
-/*
-----------------------------
-      Login section
-----------------------------
-*/
-app.post('/login', function (req, res, next) {
-    var username_from_header = req.get('userName').toString();
-    var password_from_header = req.get('password').toString();
 
-    //Generate password from header submission
-    var hash = crypto.createHmac('sha512', key);
-    hash.update(password_from_header);
-    var hashed_pass = hash.digest('hex').toString();
-    var SearchHashedPass = hashed_pass;
 
-    var params = {
-        TableName: "Authentication",
-        Key: {
-            "userName": username_from_header
-        }
+app.get("/login", (req, res, next) => {
+    AWS.config.update({
+        region: "us-west-2",
+        endpoint: "http://localhost:8000",
+    });
+    const docClient = new AWS.DynamoDB.DocumentClient();
+    const params = {
+        TableName: "Auth",
     };
-    function SessionID_Generator() {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-            s4() + '-' + s4() + s4() + s4();
-    }
-    function writeSessiontoDB(SessionID) {
-        var WriteSessionID = {
-            TableName: "AuthenticationSessionKeys",
-            Item: {
-                "SessionId": SessionID,
-                "userName": username_from_header,
-                "createDate": Date().toString()
-
-            }
-        };
-        docClient.put(WriteSessionID, function (err, data) {
-            if (err) {
-                console.log("Unable to add item. Error JSON:", err, 2);
-            } else {
-            }
-        });
-    };
-
-    docClient.get(params, function (err, data) {
+    var loggedUser = [];
+    const { email, password } = req.query;
+    console.log("query", email, password)
+    docClient.scan(params, function (err, data) {
+        console.log("user scan", data);
         if (err) {
-            res.json({ "Error": { "Critical": "Unable to read item. " + err } });
-        } else {
-            for (hashed_pass in data) {
-                foundpassword_from_DB = data.Item.password_SHA512;
-                if (SearchHashedPass === foundpassword_from_DB) {
-                    var SessionID = SessionID_Generator()
-                    writeSessiontoDB(SessionID)
-                    res.send({ "OK": { "SessionID": SessionID } });
-                } else {
-                    res.json({ "Warning": { "Response": "Login failed, credentials are incorrect." } });
-                    // Commit IP to the BLOCK DB after 10 attempts
+            res.send({
+                status: false,
+                message: "Error:Server error",
+            });
+        }
+        else if (!email && !password) {
+            res.send({
+                status: false,
+                message: "Please Enter the Login Credentails !!",
+            });
+        }
+        else if (email && !password) {
+            res.send({
+                status: false,
+                message: "Please Enter the Password to Login!!",
+            });
+        }
+        else if (password && !email) {
+            res.send({
+                status: false,
+                message: "Please Enter the Email to Login!!",
+            });
+        }
+        else {
+            console.log(data)
+            const validation = data.Items.some(function (element, index) {
+                console.log(element.email, email, typeof (element.password), typeof (password), element.password.toString() === password)
+                if (element.email === email && element.password.toString() === password) {
+                    return loggedUser.push(element)
                 }
-            }
-        };
+                return false;
+            })
 
+            console.log("validation", validation === true)
+            if (validation === true) {
+                res.send({
+                    status: true,
+                    message: "LoggedIn Successfully !!",
+                    data: loggedUser,
+                });
+            } else if (validation === false) {
+                res.send({
+                    status: true,
+                    message: "Login failed, credentials are incorrect.!!"
+                });
+            }
+        }
     });
 });
+
+
+var GuestName = "hloooooo"
+var HotelName = "aaaa"
+var BookingId = 4
+var webUrl = "http://localhost:3000"
+var HotelId = 1
+const MailOptions = {
+    subject: `Feedback`,
+
+    replacements: {
+        GuestName,
+        HotelName,
+        BookingId,
+        webUrl,
+        HotelId,
+    },
+    attachments: [
+
+        {
+            path: path.join(__dirname + "/welcome-img.jpg"),
+            cid: "o2",
+            contentDisposition: "inline",
+        },
+    ],
+    htmlPath: path.join(__dirname + "/feedbackPage.html"),
+};
+const mailRes = sendMailtoUser(MailOptions);
+ mailRes;
+
+
+function sendMailtoUser(MailOptions) {
+    console.log("sendmailer")
+    var readHTMLFile = function (path, callback) {
+        fs.readFile(path, { encoding: "utf-8" }, function (err, html) {
+            if (err) {
+                callback(err);
+                throw err;
+            } else {
+                callback(null, html);
+            }
+        });
+    };
+
+    var transporter = nodemailer.createTransport({
+        service: "outlook",
+        // host: "akhilas_reddy@outlook.com",
+        secureConnection: false,
+        auth: {
+            user: "akhilas_reddy@outlook.com",
+            pass: "ucandoit@",
+        },
+    });
+
+  
+        readHTMLFile(MailOptions.htmlPath, (err, html) => {
+            var template = handlebars.compile(html);
+            var htmlToSend = template(MailOptions.replacements);
+            let mailOptions = {
+                from: "akhilas_reddy@outlook.com",
+                to: "prematix_akhilas@outlook.com",
+                subject: MailOptions.subject,
+                html: htmlToSend,
+                attachments: MailOptions.attachments,
+            };
+            // console.log(mailOptions)
+            transporter.sendMail(mailOptions, (error, info) => {
+                // console.log("mailOptions", mailOptions)
+                console.log("mailOptions", error)
+                if (error) return resolve({ status: false, message: error.message });
+                return resolve({ status: true, message: "Mail has been sent." });
+            });
+        });
+
+    
+    
+
+}
+
+
+
+
+
+app.get("/forgotPassword", (req, res, next) => {
+    AWS.config.update({
+        region: "us-west-2",
+        endpoint: "http://localhost:8000",
+    });
+    const docClient = new AWS.DynamoDB.DocumentClient();
+    const params = {
+        TableName: "Auth",
+    };
+    var loggedUser = [];
+    const { email } = req.body;
+    docClient.scan(params, function (err, data) {
+        console.log("user scan", data);
+        if (err) {
+            res.send({
+                status: false,
+                message: "Error:Server error",
+            });
+        }
+
+        else {
+            console.log(data)
+            const validation = data.Items.some(function (element, index) {
+                if (element.email === email) {
+                    return loggedUser.push(element)
+                }
+                return false;
+            })
+            console.log(validation)
+            var mailOptions = {
+                from: "akhilas_reddy@outlook.com",
+                to: email,
+                subject: "Sending OTP",
+                text:
+                    `Use ${generateOTP} to verify your account..`,
+            };
+            var transporter = nodemailer.createTransport({
+                service: "outlook",
+                // host: "akhilas_reddy@outlook.com",
+                secureConnection: false,
+                auth: {
+                    user: "akhilas_reddy@outlook.com",
+                    pass: "ucandoit@",
+                },
+            });
+            console.log("validation", validation)
+            if (validation === true) {
+                transporter.sendMail(mailOptions, function (error, info) {
+                    if (error) {
+                        console.log(error);
+                        res.json({ "Error": { "Response": "Error while sending Mail" } });
+                    } else {
+                        console.log("Email sent: " + info.response);
+
+                        var GuestName = "hloooooo"
+                        var HotelName = "aaaa"
+                        var BookingId = 4
+                        var webUrl =  "http://localhost:3000"
+                        var HotelId = 1
+                        const MailOptions = {
+                            subject: `Feedback`,
+
+                            replacements: {
+                                GuestName,
+                                HotelName,
+                                BookingId,
+                                webUrl,
+                                HotelId,
+                            },
+                            attachments: [
+
+                                {
+                                    path: path.join(__dirname + "/welcome-img.jpg"),
+                                    cid: "o2",
+                                    contentDisposition: "inline",
+                                },
+                            ],
+                            htmlPath: path.join(__dirname + "/Newpassword.html"),
+                        };
+                        const mailRes = sendMailtoUser(MailOptions,res);
+                        mailRes;
+                        res.send({
+                            status: true,
+                            message: "Link sent to your Mail,Please login ",
+                        });
+                       
+                    }
+                });
+            } else if (validation === false) {
+                res.send({
+                    status: false,
+                    message: "Eamil is not Registered!!"
+                });
+            }
+        }
+    });
+});
+
+
+
+
+
+
+app.put("/newpassword", (req, res, next) => {
+    AWS.config.update({
+        region: "us-west-2",
+        endpoint: "http://localhost:8000",
+    });
+    const { password } = req.body;
+    const docClient = new AWS.DynamoDB.DocumentClient();
+    // const params = {
+    //     TableName: "Auth",
+    //     Item: {
+    //         email: email,
+    //     },
+    // };
+    const email = req.query.email;
+    console.log(params.Item, "items");
+    docClient.update(
+        {
+          TableName: "Auth",
+          Key: {
+            email: email,
+          },
+  
+          ExpressionAttributeValues: {
+            ":a": password,
+           
+          },
+          UpdateExpression:
+            "SET password = :a",
+        },
+
+        function (err, data) {
+          if (err) {
+            res.send({
+              status: false,
+              message: "Error:Error while fetching data",
+            });
+  
+          } else {
+            res.send({
+              status: true,
+              message: "Password Resetted Successfully!",
+            });
+  
+          }
+        }
+      );
+   
+});
+
+
+
+
 
 
 var server = app.listen(port, function (err) {

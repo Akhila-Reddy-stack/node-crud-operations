@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feedback Form</title>
+
+    <style>
+      body {
+        overflow: hidden;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      }
+
+      .header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        flex-direction: row;
+      }
+
+      .footer {
+        margin-top: 70px !important;
+      }
+
+      hr {
+        border-color: #eeeeee82 !important;
+      }
+
+      .feedback-link {
+        padding: 12px 15px !important;
+        background-color: rgb(238, 30, 117);
+        color: white !important;
+        font-weight: 500;
+        text-transform: uppercase;
+        text-decoration: none;
+        margin-bottom: 25px;
+      }
+
+      .link {
+        font-size: 13px;
+        color: rgb(6, 6, 233);
+      }
+
+      .colored-text {
+        color: rgb(238, 30, 117);
+        font-size: 15px;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .feedback-section {
+        text-align: center;
+      }
+
+      .content-body {
+        padding: 8px 20px;
+        border: solid 2px rgb(238, 30, 117);
+        font-weight: 500 !important;
+        width: 70%;
+        border-radius: 0.25rem;
+        margin: auto !important;
+      }
+
+      .content-body,
+      .feedback-section,
+      .footer {
+        line-height: 28px;
+        font-size: 15px;
+        font-weight: 500;
+      }
+
+      .thanks-text {
+        font-weight: 500;
+        color: rgb(238, 30, 117);
+        vertical-align: top;
+        margin-left: 20px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div style="margin: 2rem" class="header">
+      <div>
+        <img src="cid:o2" height="80px" width="120px" />
+        <span class="thanks-text" style="font-size: 2.2rem">
+          Thank you for visiting us..!</span
+        >
+      </div>
+    </div>
+    <div class="content-body">
+      <p>Dear <b>{{GuestName}},</b></p>
+      <p>
+        Thank you for visiting us at
+        <span class="colored-text">{{HotelName}}</span>. I hope we achieved our
+        goal in making you stay memorable by providing our outstanding services.
+      </p>
+      <p style="margin-bottom: 30px">
+        Please help us improve our customer satisfaction by writing a quick
+        review.We would be extremely grateful.<br /><br /><b>
+          Click below link to provide your valuable feedback.</b
+        >
+      </p>
+      <div class="feedback-section" style="margin-bottom: 25px">
+        <a
+          href="{{weburl}}/newpassword"
+          target="_blank"
+          class="feedback-link"
+        >
+          Write a Review
+        </a>
+      </div>
+    </div>
+    <br />
+    <br />
+    <br />
+    <p><b>Please refer to attached document for invoice details.</b></p>
+    <br />
+    <br />
+    <p class="link">
+      This is a system generated e-mail, please do not reply to this e-mail. For
+      further details, kindly visit our website
+      <a href="http://www.ttdc.in" target="_blank">www.ttdc.in</a>
+    </p>
+    <div class="footer">
+      <p>
+        <b
+          >Kind Regards,<br />{{HotelName}} Manger<br />Hosur, TamilNadu -
+          690003</b
+        >
+      </p>
+    </div>
+  </body>
+</html>
