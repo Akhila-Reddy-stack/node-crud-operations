@@ -152,7 +152,7 @@ const insertAuthRecords = () => {
 */
 var transporter = nodemailer.createTransport({
     service: "gmail",
-    host: "akhilasreddy34@gmail.com",
+    host: "smtp.gmail.com",
     secureConnection: false,
     auth: {
         user: "akhilasreddy34@gmail.com",
@@ -189,7 +189,7 @@ function sendMailtoUser(MailOptions) {
 
     var transporter = nodemailer.createTransport({
         service: "gmail",
-        host: "akhilasreddy34@gmail.com",
+        host: "smtp.gmail.com",
         secureConnection: false,
         auth: {
             user: "akhilasreddy34@gmail.com",
