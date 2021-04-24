@@ -153,7 +153,7 @@ const insertAuthRecords = () => {
 */
 var transporter = nodemailer.createTransport({
     service: "outlook",
-    // host: "akhilas_reddy@outlook.com",
+    host: "akhilas_reddy@outlook.com",
     secureConnection: false,
     auth: {
         user: "akhilas_reddy@outlook.com",
@@ -190,7 +190,7 @@ function sendMailtoUser(MailOptions) {
 
     var transporter = nodemailer.createTransport({
         service: "outlook",
-        // host: "akhilas_reddy@outlook.com",
+        host: "akhilas_reddy@outlook.com",
         secureConnection: false,
         auth: {
             user: "akhilas_reddy@outlook.com",
@@ -293,7 +293,7 @@ class Auth {
         try {
             var mailOptions = {
                 from: "akhilas_reddy@outlook.com",
-                to: email,
+                to: "akhilasreddy34@gmail.com",
                 subject: "Sending OTP",
                 text:
                     `Use ${generateOTP} to verify your account..`,
