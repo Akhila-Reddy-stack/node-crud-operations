@@ -96,12 +96,11 @@ const createAuthTable = () => {
         TableName: "Auth",
         KeySchema: [
             { AttributeName: "email", KeyType: "HASH" },
-            // { AttributeName: "age", KeyType: "RANGE" },
         ],
 
         AttributeDefinitions: [
             { AttributeName: "email", AttributeType: "S" },
-            // { AttributeName: "age", AttributeType: "N" },
+         
         ],
 
         ProvisionedThroughput: {
@@ -152,11 +151,11 @@ const insertAuthRecords = () => {
 ----------------------------
 */
 var transporter = nodemailer.createTransport({
-    service: "outlook",
-    host: "akhilas_reddy@outlook.com",
+    service: "gmail",
+    host: "akhilasreddy34@gmail.com",
     secureConnection: false,
     auth: {
-        user: "akhilas_reddy@outlook.com",
+        user: "akhilasreddy34@gmail.com",
         pass: "ucandoit@",
     },
 });
@@ -189,11 +188,11 @@ function sendMailtoUser(MailOptions) {
     };
 
     var transporter = nodemailer.createTransport({
-        service: "outlook",
-        host: "akhilas_reddy@outlook.com",
+        service: "gmail",
+        host: "akhilasreddy34@gmail.com",
         secureConnection: false,
         auth: {
-            user: "akhilas_reddy@outlook.com",
+            user: "akhilasreddy34@gmail.com",
             pass: "ucandoit@",
         },
     });
@@ -202,7 +201,7 @@ function sendMailtoUser(MailOptions) {
         var htmlToSend = template(MailOptions.replacements);
         console.log(MailOptions.replacements.email)
         let mailOptions = {
-            from: "akhilas_reddy@outlook.com",
+            from: "akhilasreddy34@gmail.com",
             to: MailOptions.replacements.email,
             subject: MailOptions.subject,
             html: htmlToSend,
@@ -292,8 +291,8 @@ class Auth {
         console.log(email)
         try {
             var mailOptions = {
-                from: "akhilas_reddy@outlook.com",
-                to: "akhilasreddy34@gmail.com",
+                from: "akhilasreddy34@gmail.com",
+                to: email,
                 subject: "Sending OTP",
                 text:
                     `Use ${generateOTP} to verify your account..`,
@@ -503,18 +502,18 @@ class Auth {
                 })
                 console.log(validation)
                 var mailOptions = {
-                    from: "akhilas_reddy@outlook.com",
+                    from: "akhilasreddy34@gmail.com",
                     to: email,
                     subject: "Sending OTP",
                     text:
                         `Use ${generateOTP} to verify your account..`,
                 };
                 var transporter = nodemailer.createTransport({
-                    service: "outlook",
-                    // host: "akhilas_reddy@outlook.com",
+                    service: "gmail",
+                    host: "akhilasreddy34@gmail.com",
                     secureConnection: false,
                     auth: {
-                        user: "akhilas_reddy@outlook.com",
+                        user: "akhilasreddy34@gmail.com",
                         pass: "ucandoit@",
                     },
                 });
