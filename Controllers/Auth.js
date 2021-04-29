@@ -45,7 +45,7 @@ console.log("generate", generateOTP)
 
 var svc = new AWS.DynamoDB();
 const params = {
-    TableName: "Auth",
+    TableName: "users",
 
 };
 var tableCount;
@@ -75,7 +75,7 @@ findDBtables
     .promise()
     .then(async (getTableNames) => {
         const findUserDataTable = getTableNames.TableNames.find(
-            (tableName) => tableName === "Auth"
+            (tableName) => tableName === "users"
         );
         if (findUserDataTable) {
             console.log("Data inserted");
@@ -93,7 +93,7 @@ findDBtables
 
 const createAuthTable = () => {
     const tableSchemaParam = {
-        TableName: "Auth",
+        TableName: "users",
         KeySchema: [
             { AttributeName: "email", KeyType: "HASH" },
             // { AttributeName: "age", KeyType: "RANGE" },
@@ -122,26 +122,29 @@ const createAuthTable = () => {
 var itemList = [];
 console.log(itemList, "itemList");
 const insertAuthRecords = () => {
-    const Auth = {
-        TableName: "Auth",
+    const auth = {
+        TableName: "users",
         Item: {
+            id:1,
             email: "aaa",
             password: "#1234",
-            userName: "aaas"
+            firstname: "abc",
+            lastname:"xyz"
+
 
         },
     };
     // dataList = Auth.Item;
     const docClient = new AWS.DynamoDB.DocumentClient();
     return new Promise((resolve, reject) => {
-        docClient.put(Auth, (err, data) => {
+        docClient.put(auth, (err, data) => {
             // console.log("Auth", data);
             if (err) {
                 console.log(err);
                 reject(err);
             }
             resolve(data);
-            console.log("Auth", Auth);
+            console.log("auth", auth);
         });
     });
 };
@@ -264,7 +267,7 @@ class Auth {
 
         const docClient = new AWS.DynamoDB.DocumentClient();
         const params = {
-            TableName: 'Auth',
+            TableName: 'users',
         };
         docClient.scan(params, function (err, data) {
             console.log("user scan", data);
@@ -378,7 +381,7 @@ class Auth {
      
         const docClient = new AWS.DynamoDB.DocumentClient();
         const params = {
-            TableName: "Auth",
+            TableName: "users",
             Item: {
                 id: tableCount,
                 email: email,
@@ -418,7 +421,7 @@ class Auth {
 
         const docClient = new AWS.DynamoDB.DocumentClient();
         const params = {
-            TableName: "Auth",
+            TableName: "users",
         };
         var loggedUser = [];
         const { email, password } = req.query;
@@ -487,7 +490,7 @@ class Auth {
 
         const docClient = new AWS.DynamoDB.DocumentClient();
         const params = {
-            TableName: "Auth",
+            TableName: "users",
         };
         var loggedUser = [];
         const { email } = req.query;
@@ -605,7 +608,7 @@ class Auth {
         console.log(params.Item, "items");
         docClient.update(
             {
-                TableName: "Auth",
+                TableName: "users",
                 Key: {
                     email: email,
                 },
