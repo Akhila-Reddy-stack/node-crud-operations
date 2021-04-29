@@ -126,7 +126,7 @@ const insertAuthRecords = () => {
         TableName: "users",
         Item: {
             id:1,
-            email: "aaa",
+            email: "akhilasreddy34@gmail.com",
             password: "#1234",
             firstname: "abc",
             lastname:"xyz"
