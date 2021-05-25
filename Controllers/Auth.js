@@ -1,5 +1,8 @@
 
 
+
+
+
 'use strict';
 
 
@@ -195,7 +198,10 @@ function sendMailtoUser(MailOptions) {
 
     var transporter = nodemailer.createTransport({
         service: "outlook",
-        // host: "akhilas_reddy@outlook.com",
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        requireTLS: true,
         secureConnection: false,
         auth: {
             user: "prematix_akhilas@outlook.com",
