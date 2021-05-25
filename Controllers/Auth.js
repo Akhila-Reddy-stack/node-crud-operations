@@ -1,8 +1,5 @@
 
 
-
-
-
 'use strict';
 
 
@@ -131,11 +128,11 @@ const insertAuthRecords = () => {
     const auth = {
         TableName: "users",
         Item: {
-            id:1,
+            id: 1,
             email: "akhilasreddy34@gmail.com",
             password: "#1234",
             firstname: "abc",
-            lastname:"xyz"
+            lastname: "xyz"
 
 
         },
@@ -162,11 +159,13 @@ const insertAuthRecords = () => {
 */
 var transporter = nodemailer.createTransport({
     service: "outlook",
-    // host: "akhilas_reddy@outlook.com",
+    host: "smtp-mail.outlook.com", // hostname
+    secureConnection: false, // TLS requires secureConnection to be false
+    port: 587,
     secureConnection: false,
     auth: {
-        user: "prematix_akhilas@outlook.com",
-        pass: "Hotmail123",
+        user: "akhilas_reddy@outlook.com",
+        pass: "Ucandoit@2",
     },
 });
 
@@ -196,18 +195,18 @@ function sendMailtoUser(MailOptions) {
         });
     };
 
-    var transporter = nodemailer.createTransport({
-        service: "outlook",
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        requireTLS: true,
-        secureConnection: false,
-        auth: {
-            user: "prematix_akhilas@outlook.com",
-            pass: "Hotmail123",
-        },
-    });
+    // var transporter = nodemailer.createTransport({
+    //     service: "outlook",
+    //     // host: "smtp-mail.outlook.com", // hostname
+    //     // secureConnection: false, // TLS requires secureConnection to be false
+    //     // port: 587,
+    //     // host: "akhilas_reddy@outlook.com",
+    //     secureConnection: false,
+    //     auth: {
+    //         user: "akhilas_reddy@outlook.com",
+    //         pass: "Ucandoit@2",
+    //     },
+    // });
     readHTMLFile(MailOptions.htmlPath, (err, html) => {
         var template = handlebars.compile(html);
         var htmlToSend = template(MailOptions.replacements);
@@ -231,34 +230,6 @@ function sendMailtoUser(MailOptions) {
 }
 
 
-
-// var GuestName = "hloooooo"
-// var HotelName = "aaaa"
-// var BookingId = 4
-// var webUrl = "werw"
-// var HotelId = 1
-// const MailOptions = {
-//     subject: `Feedback`,
-
-//     replacements: {
-//         GuestName,
-//         HotelName,
-//         BookingId,
-//         webUrl,
-//         HotelId,
-//     },
-//     attachments: [
-
-//         {
-//             path: path.join(__dirname + "/welcome-img.jpg"),
-//             cid: "o2",
-//             contentDisposition: "inline",
-//         },
-//     ],
-//     htmlPath: path.join(__dirname + "/Newpassword.html"),
-// };
-// const mailRes = sendMailtoUser(MailOptions);
-// mailRes;
 
 class Auth {
 
@@ -303,9 +274,8 @@ class Auth {
         console.log(email)
         try {
             var mailOptions = {
-                from: "prematix_akhilas@outlook.com",
-                to:email,
-                // to: "prematix_akhilas@outlook.com",
+                from: "akhilas_reddy@outlook.com",
+                to: email,
                 subject: "Sending OTP",
                 text:
                     `Use ${generateOTP} to verify your account..`,
@@ -386,7 +356,7 @@ class Auth {
         }
 
         const { email, firstname, lastname, password } = req.body;
-     
+
         const docClient = new AWS.DynamoDB.DocumentClient();
         const params = {
             TableName: "users",
@@ -542,8 +512,8 @@ class Auth {
                     // host: "akhilas_reddy@outlook.com",
                     secureConnection: false,
                     auth: {
-                        user: "prematix_akhilas@outlook.com",
-                        pass: "Hotmail123",
+                        user: "akhilas_reddy@outlook.com",
+                        pass: "Ucandoit@2",
                     },
                 });
                 console.log("validation", validation)
@@ -577,20 +547,20 @@ class Auth {
                                 ],
                                 htmlPath: path.join(__dirname + "/Newpassword.html"),
                             };
-                            try{
+                            try {
                                 const mailRes = sendMailtoUser(MailOptions);
                                 mailRes;
-                                console.log(mailRes,"mailRes")
-                                    res.send({
-                                        status: true,
-                                        message: "Link sent to your Mail,Please login ",
-                                    });
+                                console.log(mailRes, "mailRes")
+                                res.send({
+                                    status: true,
+                                    message: "Link sent to your Mail,Please login ",
+                                });
                             }
-                            catch(error){
+                            catch (error) {
                                 res.send({
                                     status: false,
                                     message: "Sorry Failed !!",
-                                });  
+                                });
                             }
                         }
                     });
