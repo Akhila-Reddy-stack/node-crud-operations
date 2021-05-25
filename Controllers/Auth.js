@@ -1,4 +1,5 @@
 
+
 'use strict';
 
 
@@ -119,6 +120,8 @@ const createAuthTable = () => {
         });
     });
 };
+
+
 var itemList = [];
 console.log(itemList, "itemList");
 const insertAuthRecords = () => {
@@ -156,14 +159,13 @@ const insertAuthRecords = () => {
 */
 var transporter = nodemailer.createTransport({
     service: "outlook",
-    host: "akhilas_reddy@outlook.com",
+    // host: "akhilas_reddy@outlook.com",
     secureConnection: false,
     auth: {
-        user: "akhilas_reddy@outlook.com",
-        pass: "ucandoit@",
+        user: "prematix_akhilas@outlook.com",
+        pass: "Hotmail123",
     },
 });
-
 
 function generatePassword() {
     var length = 8,
@@ -196,8 +198,8 @@ function sendMailtoUser(MailOptions) {
         // host: "akhilas_reddy@outlook.com",
         secureConnection: false,
         auth: {
-            user: "akhilas_reddy@outlook.com",
-            pass: "ucandoit@",
+            user: "prematix_akhilas@outlook.com",
+            pass: "Hotmail123",
         },
     });
     readHTMLFile(MailOptions.htmlPath, (err, html) => {
@@ -295,7 +297,7 @@ class Auth {
         console.log(email)
         try {
             var mailOptions = {
-                from: "akhilas_reddy@outlook.com",
+                from: "prematix_akhilas@outlook.com",
                 to:email,
                 // to: "prematix_akhilas@outlook.com",
                 subject: "Sending OTP",
@@ -519,13 +521,23 @@ class Auth {
                     text:
                         `Use ${generateOTP} to verify your account..`,
                 };
+                // var transporter = nodemailer.createTransport({
+                //     service: "outlook",
+                //     // host: "akhilas_reddy@outlook.com",
+                //     secureConnection: false,
+                //     auth: {
+                //         user: "akhilas_reddy@outlook.com",
+                //         pass: "ucandoit@",
+                //     },
+                // });
+
                 var transporter = nodemailer.createTransport({
                     service: "outlook",
                     // host: "akhilas_reddy@outlook.com",
                     secureConnection: false,
                     auth: {
-                        user: "akhilas_reddy@outlook.com",
-                        pass: "ucandoit@",
+                        user: "prematix_akhilas@outlook.com",
+                        pass: "Hotmail123",
                     },
                 });
                 console.log("validation", validation)
