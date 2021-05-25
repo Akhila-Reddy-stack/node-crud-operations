@@ -158,8 +158,10 @@ const insertAuthRecords = () => {
 ----------------------------
 */
 var transporter = nodemailer.createTransport({
-    service: "outlook",
-    host: "smtp-mail.outlook.com", // hostname
+    host: 'smtp.office365.com',
+    service:'office365',
+    // service: "outlook",
+    // host: "smtp-mail.outlook.com", // hostname
     secureConnection: false, // TLS requires secureConnection to be false
     port: 587,
     secureConnection: false,
@@ -167,6 +169,10 @@ var transporter = nodemailer.createTransport({
         user: "akhilas_reddy@outlook.com",
         pass: "Ucandoit@2",
     },
+    tls: {
+        ciphers: 'SSLv3',
+        rejectUnauthorized: true
+    }
 });
 
 function generatePassword() {
