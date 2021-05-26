@@ -1,5 +1,4 @@
 
-
 'use strict';
 var express = require('express');
 var router = express.Router();
@@ -127,7 +126,7 @@ const insertAuthRecords = () => {
         TableName: "users",
         Item: {
             id: 1,
-            email: "akhilasreddy34@gmail.com",
+            email: "projectappstack@gmail.com",
             password: "#1234",
             firstname: "abc",
             lastname: "xyz"
@@ -160,8 +159,8 @@ var transporter = nodemailer.createTransport({
     service: "gmail",
     // host: "smtp.gmail.com",
     auth: {
-        user: "akhilasreddy34@gmail.com",
-        pass: "ucandoit@",
+        user: "projectappstack@gmail.com",
+        pass: "project@123",
     },
    
 });
@@ -199,7 +198,7 @@ function sendMailtoUser(MailOptions) {
         var htmlToSend = template(MailOptions.replacements);
         console.log(MailOptions.replacements.email)
         let mailOptions = {
-            from: "akhilasreddy34@gmail.com",
+            from: "projectappstack@gmail.com",
             to: MailOptions.replacements.email,
             subject: MailOptions.subject,
             html: htmlToSend,
@@ -260,7 +259,7 @@ class Auth {
         console.log(email)
         try {
             var mailOptions = {
-                from: "akhilasreddy34@gmail.com",
+                from: "projectappstack@gmail.com",
                 to: email,
                 subject: "Sending OTP",
                 text:
@@ -472,7 +471,7 @@ class Auth {
                 })
                 console.log(validation)
                 var mailOptions = {
-                    from: "akhilasreddy34@gmail.com",
+                    from: "projectappstack@gmail.com",
                     to: email,
                     subject: "Sending OTP",
                     text:
@@ -485,8 +484,8 @@ class Auth {
                     host: "smtp.gmail.com",
                     secureConnection: false,
                     auth: {
-                        user: "akhilasreddy34@gmail.com",
-                        pass: "ucandoit@",
+                        user: "projectappstack@gmail.com",
+                        pass: "project@123",
                     },
                 });
                 console.log("validation", validation)
