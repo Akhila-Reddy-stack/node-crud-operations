@@ -5,11 +5,14 @@ module.exports = {
      endpoint: `http://localhost:8000`,
     },
     aws_remote_config: {
-      accessKeyId: 'AKIA23YEJMADZHEEW372',
-      secretAccessKey: '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',
+      accessKeyId: 'AKIA23GPDI4MAKVX5UOY',
+      secretAccessKey: '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',
       region: 'us-east-2',
     }
 };
+
+
+
 
 
 
