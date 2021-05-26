@@ -1,8 +1,6 @@
 
 
 'use strict';
-
-
 var express = require('express');
 var router = express.Router();
 var AWS = require('aws-sdk');
@@ -157,23 +155,17 @@ const insertAuthRecords = () => {
     Registration section
 ----------------------------
 */
+
 var transporter = nodemailer.createTransport({
-    host: 'smtp.office365.com',
-    service:'office365',
-    // service: "outlook",
-    // host: "smtp-mail.outlook.com", // hostname
-    secureConnection: false, // TLS requires secureConnection to be false
-    port: 587,
-    secureConnection: false,
+    service: "gmail",
+    // host: "smtp.gmail.com",
     auth: {
-        user: "akhilas_reddy@outlook.com",
-        pass: "Ucandoit@2",
+        user: "akhilasreddy34@gmail.com",
+        pass: "ucandoit@",
     },
-    tls: {
-        ciphers: 'SSLv3',
-        rejectUnauthorized: true
-    }
+   
 });
+
 
 function generatePassword() {
     var length = 8,
@@ -201,24 +193,13 @@ function sendMailtoUser(MailOptions) {
         });
     };
 
-    // var transporter = nodemailer.createTransport({
-    //     service: "outlook",
-    //     // host: "smtp-mail.outlook.com", // hostname
-    //     // secureConnection: false, // TLS requires secureConnection to be false
-    //     // port: 587,
-    //     // host: "akhilas_reddy@outlook.com",
-    //     secureConnection: false,
-    //     auth: {
-    //         user: "akhilas_reddy@outlook.com",
-    //         pass: "Ucandoit@2",
-    //     },
-    // });
+  
     readHTMLFile(MailOptions.htmlPath, (err, html) => {
         var template = handlebars.compile(html);
         var htmlToSend = template(MailOptions.replacements);
         console.log(MailOptions.replacements.email)
         let mailOptions = {
-            from: "akhilas_reddy@outlook.com",
+            from: "akhilasreddy34@gmail.com",
             to: MailOptions.replacements.email,
             subject: MailOptions.subject,
             html: htmlToSend,
@@ -275,23 +256,18 @@ class Auth {
 
 
     async sendOTP(req, res) {
-
         const { email } = req.body;
         console.log(email)
         try {
             var mailOptions = {
-                from: "akhilas_reddy@outlook.com",
+                from: "akhilasreddy34@gmail.com",
                 to: email,
                 subject: "Sending OTP",
                 text:
                     `Use ${generateOTP} to verify your account..`,
             };
-            // let mailOptions = {
-            //     from: "akhilas_reddy@outlook.com",
-            //     to: email,
-            //     subject: MailOptions.subject,
-            //     subject: "Sending OTP"
-            //   };
+            console.log(mailOptions,"mailOptions")
+            console.log(transporter,"mailOptions")
             transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
                     console.log(error);
@@ -299,7 +275,6 @@ class Auth {
                         status: false,
                         message: "Error while sending Mail",
                     });
-
                 } else {
                     console.log("Email sent: " + info.response);
                     res.send({
@@ -497,29 +472,21 @@ class Auth {
                 })
                 console.log(validation)
                 var mailOptions = {
-                    from: "akhilas_reddy@outlook.com",
+                    from: "akhilasreddy34@gmail.com",
                     to: email,
                     subject: "Sending OTP",
                     text:
                         `Use ${generateOTP} to verify your account..`,
                 };
-                // var transporter = nodemailer.createTransport({
-                //     service: "outlook",
-                //     // host: "akhilas_reddy@outlook.com",
-                //     secureConnection: false,
-                //     auth: {
-                //         user: "akhilas_reddy@outlook.com",
-                //         pass: "ucandoit@",
-                //     },
-                // });
+               
 
                 var transporter = nodemailer.createTransport({
-                    service: "outlook",
-                    // host: "akhilas_reddy@outlook.com",
+                    service: "gmail",
+                    host: "smtp.gmail.com",
                     secureConnection: false,
                     auth: {
-                        user: "akhilas_reddy@outlook.com",
-                        pass: "Ucandoit@2",
+                        user: "akhilasreddy34@gmail.com",
+                        pass: "ucandoit@",
                     },
                 });
                 console.log("validation", validation)
